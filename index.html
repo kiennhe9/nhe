@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Chúc Mừng Sinh Nhật</title>
+<style>
+* {margin:0;padding:0;box-sizing:border-box;}
+
+/* Nền gradient động + Matrix */
+body {
+  background: linear-gradient(120deg, #000000, #1a001a, #330033);
+  background-size: 300% 300%;
+  animation: bgMove 15s ease infinite;
+  overflow:hidden;
+  font-family:'Courier New',monospace;
+  color:#ff66cc;
+}
+@keyframes bgMove {
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+#matrix {position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;}
+
+/* Nhập mật khẩu */
+#password-section {
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  display:flex;align-items:center;gap:20px;z-index:5;
+  background:rgba(255,182,193,0.15);padding:30px;border:2px solid #ff99cc;border-radius:15px;
+  box-shadow:0 0 25px #ff66cc;
+}
+.form-box {display:flex;flex-direction:column;gap:15px;}
+.form-box .title {color:#ff99cc;font-size:1.5rem;text-shadow:0 0 15px #ff66cc;}
+input {padding:12px;border-radius:8px;border:2px solid #ff99cc;background:black;color:#ff66cc;font-size:1rem;outline:none;}
+button {
+  padding:12px;border-radius:8px;border:none;background:#ff66cc;color:black;
+  font-size:1rem;font-weight:bold;cursor:pointer;transition:0.3s;
+  box-shadow:0 0 10px #ff66cc, 0 0 20px #ff99cc inset;
+}
+button:hover {
+  background:#ff3399;
+  box-shadow:0 0 20px #ff3399, 0 0 40px #ff99cc inset;
+}
+.image-box img {width:120px;filter:drop-shadow(0 0 15px #ff66cc);}
+
+/* ===== Bàn phím ảo ===== */
+#virtualKeyboard {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 10px 0;
+}
+.key {
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #ff66cc, #ff99cc);
+  color: black;
+  font-weight: bold;
+  font-size: 1.1rem;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 0 10px #ff66cc, inset 0 0 10px #ff99cc;
+  transition: 0.2s;
+}
+.key:hover {
+  background: linear-gradient(135deg, #ff3399, #ff66cc);
+  box-shadow: 0 0 15px #ff3399, inset 0 0 15px #ff99cc;
+  transform: scale(1.05);
+}
+.key:active {
+  transform: scale(0.9);
+}
+
+/* Các bước */
+.step {position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;display:none;z-index:2;}
+
+/* Countdown style */
+#countdown {
+  font-size: clamp(6rem, 20vw, 10rem);
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(45deg, #ff66cc, #ff3399, #ff99cc);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 20px rgba(255, 102, 204, 0.7), 0 0 40px rgba(255, 51, 153, 0.5);
+  animation: float 2s ease-in-out infinite, glowPulse 1.5s infinite alternate;
+}
+#countdown.cake {
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  color: #ff66cc; /* Đảm bảo màu tự nhiên của biểu tượng 🎂 */
+  text-shadow: 0 0 20px #ff99cc, 0 0 40px #ff3399;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+@keyframes glowPulse {
+  from { text-shadow: 0 0 10px rgba(255, 102, 204, 0.7), 0 0 20px rgba(255, 51, 153, 0.5); }
+  to { text-shadow: 0 0 30px rgba(255, 153, 204, 0.9), 0 0 50px rgba(255, 102, 204, 0.7); }
+}
+
+/* Final step */
+#finalStep {display:flex;align-items:flex-start;gap:30px;z-index:3;}
+#finalImage {
+  width: min(30vw, 280px);
+  border-radius:20px;
+  border:4px solid #ff99cc;
+  box-shadow:
+    0 0 25px #ff66cc,
+    0 0 50px #ff99cc,
+    0 0 80px rgba(255, 153, 204, 0.6);
+  animation:pulse 3s infinite, floatImg 6s ease-in-out infinite;
+  transition:transform 0.5s ease;
+}
+#finalImage:hover {
+  transform:scale(1.1) rotate(2deg);
+}
+@keyframes pulse {
+  0%{transform:scale(1);}
+  50%{transform:scale(1.05);}
+  100%{transform:scale(1);}
+}
+@keyframes floatImg {
+  0% { transform:translateY(0); }
+  50% { transform:translateY(-15px); }
+  100% { transform:translateY(0); }
+}
+#letterBox {
+  width: min(30vw, 280px);
+  background:#fff0f5;padding:20px;border-radius:15px;
+  border:2px solid #ff99cc;box-shadow:0 0 25px #ff66cc;color:#ff3399;
+  font-size: clamp(1rem, 4vw, 1.2rem);
+  text-align:left;font-family:'Comic Sans MS',cursive;white-space:pre-line;
+  line-height: 1.6;
+  transform:rotateY(-90deg);transform-origin:left center;transition:transform 1s ease;
+}
+#loveText {
+  margin-top:15px;font-size: clamp(1.5rem, 6vw, 2rem);
+  text-align:center;
+  animation: heartbeat 1.5s infinite;
+}
+@keyframes heartbeat {
+  0%,100% { transform: scale(1); color:#ff3399; }
+  50% { transform: scale(1.2); color:#ff0066; }
+}
+
+/* Confetti */
+.confetti {position:fixed;width:10px;height:10px;background:var(--color);top:-10px;opacity:0.9;animation:fall linear forwards;}
+@keyframes fall {to {transform:translateY(110vh) rotate(720deg);opacity:0;}}
+
+/* Sao lấp lánh */
+.star {
+  position:absolute;width:2px;height:2px;background:white;border-radius:50%;
+  opacity:0.8;animation: twinkle 2s infinite alternate;
+}
+@keyframes twinkle {
+  from {opacity:0.2; transform:scale(1);}
+  to {opacity:1; transform:scale(1.5);}
+}
+
+/* Overlay cảnh báo xoay ngang */
+#rotateWarning {
+  position:fixed;
+  top:0;left:0;width:100%;height:100%;
+  background:black;
+  color:#ff66cc;
+  font-size:1.5rem;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:20px;
+  z-index:9999;
+  animation: blink 1.5s infinite alternate;
+  text-shadow:0 0 10px #ff66cc, 0 0 20px #ff99cc, 0 0 40px #ff3399;
+}
+@keyframes blink {
+  from { opacity:0.5; transform:scale(1); }
+  to { opacity:1; transform:scale(1.1); }
+}
+
+/* Matrix text styles */
+.matrix-text {
+  font-size: clamp(2rem, 8vw, 4rem);
+  text-shadow: 0 0 15px #ff66cc, 0 0 30px #ff99cc;
+  letter-spacing: 0.1em;
+}
+.matrix-text.big {
+  font-size: clamp(4rem, 12vw, 6rem);
+}
+.matrix-text.rainbow {
+  animation: rainbow 3s linear infinite;
+}
+@keyframes rainbow {
+  0% { color: #ff66cc; }
+  20% { color: #ff3399; }
+  40% { color: #ff0066; }
+  60% { color: #ff99cc; }
+  80% { color: #ff66cc; }
+  100% { color: #ff3399; }
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 768px) {
+  #password-section {
+    flex-direction: column;
+    padding: 20px;
+    gap: 10px;
+  }
+  .form-box .title {
+    font-size: 1.2rem;
+  }
+  input, button {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+  .image-box img {
+    width: 100px;
+  }
+  #virtualKeyboard {
+    gap: 8px;
+  }
+  .key {
+    font-size: 1rem;
+    padding: 10px;
+  }
+  #letterBox {
+    font-size: clamp(0.9rem, 3.5vw, 1rem);
+    padding: 15px;
+  }
+  #loveText {
+    font-size: clamp(1.2rem, 5vw, 1.5rem);
+  }
+  #countdown {
+    font-size: clamp(4rem, 15vw, 8rem);
+  }
+  #rotateWarning {
+    font-size: 1.2rem;
+  }
+}
+</style>
+</head>
+<body>
+<canvas id="matrix"></canvas>
+
+<!-- Nhập mật khẩu -->
+<div id="password-section">
+  <div class="form-box">
+    <div class="title">Nhập mật khẩu 🎀</div>
+    <input type="password" id="password" placeholder="••••••">
+    <div id="virtualKeyboard"></div>
+    <button onclick="checkPassword()">Mở khóa</button>
+  </div>
+  <div class="image-box">
+    <img src="chi.jpg" alt="Cute Cake">
+  </div>
+</div>
+
+<!-- Countdown -->
+<div id="step2" class="step">
+  <div id="countdown"></div>
+</div>
+
+<!-- Các bước decode chữ -->
+<div id="step3" class="step"><div id="decode1" class="matrix-text big">🎂</div></div>
+<div id="step4" class="step"><div id="decode2" class="matrix-text rainbow"></div></div>
+<div id="step5" class="step"><div id="decode3" class="matrix-text"></div></div>
+<div id="step6" class="step"><div id="decode4" class="matrix-text"></div></div>
+
+<!-- Final step -->
+<div id="step7" class="step">
+  <div id="finalStep">
+    <div style="display:flex;flex-direction:column;align-items:center;">
+      <img id="finalImage" src="chi.jpg" alt="Ảnh sinh nhật">
+      <div id="loveText"></div>
+    </div>
+    <div id="letterBox"></div>
+  </div>
+</div>
+
+<!-- Overlay xoay ngang -->
+<div id="rotateWarning">
+  📱 Vui lòng xoay ngang màn hình để xem 🎂🎉
+</div>
+
+<script>
+// Matrix nền
+const canvas = document.getElementById("matrix");
+const ctx = canvas.getContext("2d");
+canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
+const letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const fontSize = 14;
+const columns = canvas.width / fontSize;
+const drops = Array(Math.floor(columns)).fill(1);
+function drawMatrix() {
+  ctx.fillStyle = "rgba(0,0,0,0.05)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#ff66cc";
+  ctx.font = fontSize + "px monospace";
+  for (let i = 0; i < drops.length; i++) {
+    const text = letters.charAt(Math.floor(Math.random() * letters.length));
+    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) { drops[i] = 0; }
+    drops[i]++;
+  }
+}
+setInterval(drawMatrix, 40);
+
+// Sao lấp lánh
+for (let i = 0; i < 50; i++) {
+  const star = document.createElement("div");
+  star.className = "star";
+  star.style.top = Math.random() * 100 + "vh";
+  star.style.left = Math.random() * 100 + "vw";
+  star.style.animationDuration = (1 + Math.random() * 2) + "s";
+  document.body.appendChild(star);
+}
+
+// ===== Bàn phím ảo =====
+const keyboard = document.getElementById("virtualKeyboard");
+const keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "←"];
+keys.forEach(k => {
+  const btn = document.createElement("button");
+  btn.className = "key";
+  btn.textContent = k;
+  btn.onclick = () => handleKeyPress(k);
+  keyboard.appendChild(btn);
+});
+function handleKeyPress(key) {
+  const input = document.getElementById("password");
+  if (key === "←") {
+    input.value = input.value.slice(0, -1);
+  } else {
+    input.value += key;
+  }
+}
+
+// Logic mật khẩu
+let step = 1;
+function showStep(n) {
+  document.querySelectorAll(".step").forEach(el => el.style.display = "none");
+  document.getElementById("step" + n).style.display = "block";
+}
+function checkPassword() {
+  const pass = document.getElementById("password").value;
+  if (pass === "0203") {
+    document.getElementById("password-section").style.display = "none";
+    step = 2;
+    showStep(step);
+    startCountdown();
+  } else alert("Sai mật khẩu!");
+}
+
+// ====================== Countdown ======================
+let countdownValue = 3;
+function startCountdown() {
+  const countdownElement = document.getElementById("countdown");
+  function updateCountdown() {
+    if (countdownValue > 0) {
+      countdownElement.textContent = countdownValue;
+      countdownElement.classList.remove("cake"); // Loại bỏ class cake khi đếm số
+      setTimeout(() => {
+        countdownValue--;
+        updateCountdown();
+      }, 1200);
+    } else {
+      countdownElement.textContent = "🎂";
+      countdownElement.classList.add("cake"); // Áp dụng style riêng cho 🎂
+      setTimeout(() => {
+        step++;
+        nextStep();
+      }, 1200);
+    }
+  }
+  updateCountdown();
+}
+
+// ====================== Các bước decode chữ, final step ======================
+function decodeEffect(elementId, finalText, callback) {
+  const chars = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let display = Array(finalText.length).fill("0");
+  let progress = 0;
+  const interval = setInterval(() => {
+    display = display.map((c, i) => i < progress ? finalText[i] : chars[Math.floor(Math.random() * chars.length)]);
+    document.getElementById(elementId).textContent = display.join("");
+    progress++;
+    if (progress > finalText.length) {
+      clearInterval(interval);
+      if (callback) setTimeout(callback, 500);
+    }
+  }, 80);
+}
+
+function nextStep() {
+  step++;
+  if (step === 3) { showStep(step); decodeEffect("decode1", "🎂", () => nextStep()); }
+  else if (step === 4) { showStep(step); decodeEffect("decode2", "HAPPY BIRTHDAY", () => nextStep()); }
+  else if (step === 5) { showStep(step); decodeEffect("decode3", "12.08.2009", () => nextStep()); }
+  else if (step === 6) { showStep(step); decodeEffect("decode4", "ĐÀM QUỲNH CHI", () => nextStep()); }
+  else if (step === 7) {
+    showStep(step);
+    releaseBalloonsAndHearts();
+    showLetterBox();
+    typeLoveText("I LOVE YOU 💖");
+    setInterval(() => firework(window.innerWidth / 2, window.innerHeight / 2), 2000);
+    showerHearts();
+  }
+}
+
+// Bóng bay & tim
+function releaseBalloonsAndHearts() {
+  const symbols = ["🎈", "❤️", "💖", "🎉"];
+  for (let i = 0; i < 30; i++) {
+    const span = document.createElement("div");
+    span.className = "floating";
+    span.style.left = Math.random() * 100 + "vw";
+    span.style.fontSize = (20 + Math.random() * 30) + "px";
+    span.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    document.body.appendChild(span);
+    setTimeout(() => span.remove(), 6000);
+  }
+}
+
+// Thư sinh nhật
+function showLetterBox() {
+  const letter = document.getElementById("letterBox");
+  const text = "Chúc sinh nhật thật vui vẻ!\nChúc mọi điều tốt đẹp nhất sẽ đến với em.\n❤️🎂💖";
+  letter.textContent = "";
+  setTimeout(() => { letter.style.transform = "rotateY(0deg)"; }, 200);
+  let i = 0;
+  function typing() {
+    if (i < text.length) {
+      letter.textContent += text.charAt(i);
+      i++;
+      setTimeout(typing, 60);
+    }
+  }
+  setTimeout(typing, 800);
+}
+
+// Typing chữ "I LOVE YOU"
+function typeLoveText(text) {
+  const loveEl = document.getElementById("loveText");
+  let i = 0;
+  const interval = setInterval(() => {
+    loveEl.textContent = text.slice(0, i + 1);
+    i++;
+    if (i >= text.length) clearInterval(interval);
+  }, 150);
+}
+
+// Confetti
+function createConfetti() {
+  for (let i = 0; i < 100; i++) {
+    const conf = document.createElement("div");
+    conf.className = "confetti";
+    conf.style.setProperty("--color", `hsl(${Math.random() * 360},70%,60%)`);
+    conf.style.left = Math.random() * 100 + "vw";
+    conf.style.animationDuration = (2 + Math.random() * 3) + "s";
+    conf.style.width = (5 + Math.random() * 5) + "px";
+    conf.style.height = (5 + Math.random() * 5) + "px";
+    document.body.appendChild(conf);
+    setTimeout(() => conf.remove(), 5000);
+  }
+}
+setInterval(createConfetti, 500);
+
+// Firework
+function firework(x, y) {
+  for (let i = 0; i < 30; i++) {
+    const dot = document.createElement("div");
+    dot.style.position = "fixed";
+    dot.style.left = x + "px";
+    dot.style.top = y + "px";
+    dot.style.width = "6px";
+    dot.style.height = "6px";
+    dot.style.borderRadius = "50%";
+    dot.style.background = `hsl(${Math.random() * 360},100%,60%)`;
+    document.body.appendChild(dot);
+    const angle = Math.random() * 2 * Math.PI;
+    const distance = 80 + Math.random() * 50;
+    const tx = Math.cos(angle) * distance;
+    const ty = Math.sin(angle) * distance;
+    dot.animate(
+      [{ transform: `translate(0,0)`, opacity: 1 }, { transform: `translate(${tx}px,${ty}px)`, opacity: 0 }],
+      { duration: 1500, easing: "ease-out" }
+    );
+    setTimeout(() => dot.remove(), 1500);
+  }
+}
+
+// Heart shower
+function showerHearts() {
+  setInterval(() => {
+    const heart = document.createElement("div");
+    heart.textContent = "💖";
+    heart.style.position = "fixed";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.top = "100vh";
+    heart.style.fontSize = (20 + Math.random() * 30) + "px";
+    heart.style.animation = "rise 4s linear forwards";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 4000);
+  }, 400);
+}
+
+// Mouse trail
+document.addEventListener("mousemove", e => {
+  const trail = document.createElement("div");
+  trail.style.position = "fixed";
+  trail.style.left = e.pageX + "px";
+  trail.style.top = e.pageY + "px";
+  trail.style.width = "6px";
+  trail.style.height = "6px";
+  trail.style.borderRadius = "50%";
+  trail.style.background = "#ff66cc";
+  trail.style.pointerEvents = "none";
+  trail.style.boxShadow = "0 0 10px #ff99cc";
+  document.body.appendChild(trail);
+  trail.animate(
+    [{ transform: "translateY(0)", opacity: 1 }, { transform: "translateY(-20px)", opacity: 0 }],
+    { duration: 800 }
+  );
+  setTimeout(() => trail.remove(), 800);
+});
+
+// Overlay xoay ngang
+function checkOrientation() {
+  const warning = document.getElementById("rotateWarning");
+  if (window.innerHeight > window.innerWidth) {
+    warning.style.display = "flex";
+  } else {
+    warning.style.display = "none";
+  }
+}
+window.addEventListener("resize", checkOrientation);
+checkOrientation();
+</script>
+</body>
+</html>
