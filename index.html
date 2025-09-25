@@ -161,27 +161,6 @@ button:hover {
   to {opacity:1; transform:scale(1.5);}
 }
 
-/* Overlay cảnh báo xoay ngang */
-#rotateWarning {
-  position:fixed;
-  top:0;left:0;width:100%;height:100%;
-  background:black;
-  color:#ff66cc;
-  font-size:1.5rem;
-  display:none;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  padding:20px;
-  z-index:9999;
-  animation: blink 1.5s infinite alternate;
-  text-shadow:0 0 10px #ff66cc, 0 0 20px #ff99cc, 0 0 40px #ff3399;
-}
-@keyframes blink {
-  from { opacity:0.5; transform:scale(1); }
-  to { opacity:1; transform:scale(1.1); }
-}
-
 /* Matrix text styles */
 .matrix-text {
   font-size: clamp(2rem, 8vw, 4rem);
@@ -237,9 +216,6 @@ button:hover {
   #countdown {
     font-size: clamp(4rem, 15vw, 8rem);
   }
-  #rotateWarning {
-    font-size: 1.2rem;
-  }
 }
 </style>
 </head>
@@ -279,11 +255,6 @@ button:hover {
     </div>
     <div id="letterBox"></div>
   </div>
-</div>
-
-<!-- Overlay xoay ngang -->
-<div id="rotateWarning">
-  📱 Vui lòng xoay ngang màn hình để xem 🎂🎉
 </div>
 
 <script>
@@ -362,14 +333,14 @@ function startCountdown() {
   function updateCountdown() {
     if (countdownValue > 0) {
       countdownElement.textContent = countdownValue;
-      countdownElement.classList.remove("cake"); // Loại bỏ class cake khi đếm số
+      countdownElement.classList.remove("cake");
       setTimeout(() => {
         countdownValue--;
         updateCountdown();
       }, 1200);
     } else {
       countdownElement.textContent = "🎂";
-      countdownElement.classList.add("cake"); // Áp dụng style riêng cho 🎂
+      countdownElement.classList.add("cake");
       setTimeout(() => {
         step++;
         nextStep();
@@ -429,7 +400,8 @@ function releaseBalloonsAndHearts() {
 function showLetterBox() {
   const letter = document.getElementById("letterBox");
   const text = "Chúc sinh nhật thật vui vẻ!\nChúc mọi điều tốt đẹp nhất sẽ đến với em.\n❤️🎂💖";
-  letter.textContent = "";
+  letter.textContent24="";
+
   setTimeout(() => { letter.style.transform = "rotateY(0deg)"; }, 200);
   let i = 0;
   function typing() {
@@ -527,18 +499,6 @@ document.addEventListener("mousemove", e => {
   );
   setTimeout(() => trail.remove(), 800);
 });
-
-// Overlay xoay ngang
-function checkOrientation() {
-  const warning = document.getElementById("rotateWarning");
-  if (window.innerHeight > window.innerWidth) {
-    warning.style.display = "flex";
-  } else {
-    warning.style.display = "none";
-  }
-}
-window.addEventListener("resize", checkOrientation);
-checkOrientation();
 </script>
 </body>
 </html>
